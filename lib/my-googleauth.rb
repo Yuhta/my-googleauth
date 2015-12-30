@@ -5,7 +5,8 @@ require 'launchy'
 module MyGoogleAuth
   include Google::Auth
 
-  SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
+  SCOPES = ['https://www.googleapis.com/auth/gmail.readonly',
+            'https://www.googleapis.com/auth/calendar.readonly']
   OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'
 
   def self.headers
