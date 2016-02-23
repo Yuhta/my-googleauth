@@ -1,12 +1,16 @@
-(ns my-googleauth.core-test
+(ns yuhta.googleauth-test
   (:require [clojure.test :refer :all]
-            [my-googleauth.core :refer :all])
-  (:import com.google.api.client.googleapis.util.Utils
+            [clojure.java.io :refer [reader resource]]
+            [yuhta.googleauth :refer :all])
+  (:import (com.google.api.client.googleapis auth.oauth2.GoogleClientSecrets
+                                             util.Utils)
            com.google.api.client.util.store.MemoryDataStoreFactory
            com.google.api.services.oauth2.Oauth2$Builder))
 
 (use-fixtures :once
-  #(with-redefs [*data-store-factory* (MemoryDataStoreFactory/getDefaultInstance)
+  #(with-redefs [*client-secret* (GoogleClientSecrets/load (Utils/getDefaultJsonFactory)
+                                                           (reader (resource "client-secret.json")))
+                 *data-store-factory* (MemoryDataStoreFactory/getDefaultInstance)
                  *scopes* #{"https://www.googleapis.com/auth/userinfo.profile",
                             "https://www.googleapis.com/auth/userinfo.email"}]
      (%)))
@@ -16,7 +20,7 @@
         oauth2 (-> (Oauth2$Builder. *http-transport*
                                     (Utils/getDefaultJsonFactory)
                                     credential)
-                   (.setApplicationName "my-googleauth.core-test")
+                   (.setApplicationName "googleauth-test")
                    .build)
         token-info (-> oauth2
                        .tokeninfo

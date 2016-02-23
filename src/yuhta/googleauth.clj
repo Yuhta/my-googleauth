@@ -1,4 +1,4 @@
-(ns my-googleauth.core
+(ns yuhta.googleauth
   (:require [clojure.java.io :refer [file reader]])
   (:import com.google.api.client.auth.oauth2.Credential
            (com.google.api.client.extensions.java6.auth.oauth2 AuthorizationCodeInstalledApp
