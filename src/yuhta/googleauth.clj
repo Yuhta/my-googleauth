@@ -1,5 +1,6 @@
 (ns yuhta.googleauth
-  (:require [clojure.java.io :refer [file reader]])
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :refer [file reader]])
   (:import com.google.api.client.auth.oauth2.Credential
            (com.google.api.client.extensions.java6.auth.oauth2 AuthorizationCodeInstalledApp
                                                                AbstractPromptReceiver)
@@ -9,7 +10,8 @@
                                              javanet.GoogleNetHttpTransport
                                              util.Utils)
            (com.google.api.client.util.store DataStoreFactory
-                                             FileDataStoreFactory)))
+                                             FileDataStoreFactory)
+           java.io.PushbackReader))
 
 (def ^:dynamic *google-auth-home*
   (file (System/getProperty "user.home") ".google-auth"))
@@ -23,7 +25,8 @@
                                           "client-secret.json"))))
 
 (def ^:dynamic *scopes*
-  #{})
+  (with-open [in (PushbackReader. (reader (file *google-auth-home* "scopes.edn")))]
+    (edn/read in)))
 
 (def ^:dynamic *http-transport*
   (GoogleNetHttpTransport/newTrustedTransport))
